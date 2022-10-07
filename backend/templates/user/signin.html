@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Sign in</title>
+  {% include 'includes/headerfiles.html' %}
+</head>
+<body>
+{% include 'includes/header.html' %}
+  <div class="container-fluid" id="signin">
+    {% include 'alerts/notification.html' %}
+    <div class="row p-0 mt-3">
+      <div class="col-md-4 m-auto mt-3 p-2">
+        <h4 class="text-primary">Sign In</h4>
+        <canvas id="capture" width="330" height="250" class="d-none"></canvas>
+        <div class="row">
+        <div class="col-10" v-if="isCameraStart==0">
+          <img class="rounded" style="width: 330px; height:250px;" v-if="imageFile==''" src="{% static 'assets/images/face.jpg' %}" alt="">
+          <div> <img :src="imageFile" alt="" class="rounded border" id="imageFile"> </div>
+        </div>
+        <div class="col-10" v-else="isCameraStart==1">
+          <video class="rounded border" id="stream" style="width: 330px; height:250px;"></video>
+        </div>
+
+        <div class="col-10 mt-1 text-center">
+        <button class="btn btn-warning me-2 mt-2 float-start" @click="startCamera">Start camera</button>
+        <button class="btn btn-danger me-2 mt-2" @click="stopStreaming">Stop</button>
+        <button class="btn btn-success float-end mt-2" @click="captureImage">Capture</button>
+      </div>
+
+      <div class="form-group mt-4 col-10">
+        <label for="userid" class="text-muted pb-2">Email address</label>
+      <input type="email" class="form-control form-control" v-model="parameters.userid" placeholder="Enter email" id="userid" required maxlength="100" minlength="10">
+    </div>
+
+      <div class="col-10 mt-3">
+            <button type="submit" @click="sendForm" name="signin" class="btn btn-outline-primary form-control" :disabled="isDisabled" v-text="button"></button>
+     </div>
+    </div>
+  </div>
+</div>    
+    </div>
+
+
+    <script type="module">
+      import { createApp } from '/../static/assets/js/vue.js'
+      createApp({
+      el: '#signin',
+      data(){
+        return{
+            pageName: 'Sign In',
+            alertTitle: '',
+            alertMsg: 'sdsadasd',
+            showOverlay: false,        
+            info:[],
+            progress:null,
+            pwd:'',
+            rememberme_val: '',
+            rememberme: '',
+            classname:'',
+            token:'',
+            btntxt: 'Sign In',
+            button: 'Sign In',
+            isDisabled: false,
+            toggle:null,
+            pass_type:'password',
+            opacity:'',
+            isCameraStart: false,
+            isImage: false,
+            cameraStream: 0,
+            imageFile: '',
+            camptureResponse: '',
+            selectedFile: '',
+            parameters:{
+                personal_id: '',
+                userid: '',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+              
+          }
+      
+      },
+    created(){
+     
+      },
+      
+    methods:{
+        startCamera: function(){
+          this.alertMsg= ''
+          this.isCameraStart = 1;
+          var cameraStream = null
+          setTimeout(function(){
+          var stream = document.getElementById("stream");
+          var mediaSupport = 'mediaDevices' in navigator;
+          if(mediaSupport && null == cameraStream) {
+          navigator.mediaDevices.getUserMedia( { video: true } )
+          .then(function(mediaStream) {
+          stream.srcObject = mediaStream;
+          stream.play();
+          })
+          .catch(function( err ) {
+          this.alertMsg = "Unable to access camera: " + err 
+          $("#alertDanger").toast('show')
+          });
+          }else {
+          this.alertMsg = 'Your browser does not support media devices.'
+          $("#alertDanger").toast('show')
+          }
+          }.bind(this),2000)
+      
+        },
+
+    stopStreaming: function () {
+      this.isCameraStart = 0;
+      this.imageFile = ''
+      var stream = document.getElementById("stream");
+      try {
+        if(null != stream.srcObject ) {
+        var track = stream.srcObject.getTracks()[0];
+        track.stop();
+        stream.load();
+      }
+      } catch (error) {
+        this.alertMsg = ''
+        $("#alertDanger").toast('hide')
+      }
+      },
+
+    captureImage: function(){
+        try {
+        $("#toast").hide()
+        var stream = document.getElementById("stream");
+        var cameraStream = stream.srcObject;
+        var capture = document.getElementById("capture");
+        if(null != cameraStream) {
+          var ctx = capture.getContext('2d');
+          var img = new Image();
+          ctx.drawImage(stream, 0, 0, capture.width, capture.height);
+          img.src	= capture.toDataURL("image/png");
+          capture.toBlob(blob => {
+            const file = new File([blob], "image.png");
+            this.selectedFile = file;
+          });
+          img.width	= 330;
+          this.imageFile = '';
+          this.imageFile = img.src;
+          this.isCameraStart = 0;
+          $("#alertDanger").toast('hide')
+        }else{
+        this.alertMsg = 'Your camera is not started.'
+        $("#alertDanger").toast('show')
+        }
+       } catch (error) {
+        this.alertMsg = 'Your camera is not started.'
+        $("#alertDanger").toast('show')
+        }
+      },
+
+
+    sendForm: function(){
+        if (this.imageFile == '') {
+            this.alertMsg = 'Start camera and capture your photograph.'
+            $("#alertDanger").toast('show')
+            return false;
+        }else if(this.parameters.userid == '') {
+            this.alertMsg = 'Please enter your account email address.'
+            $("#alertDanger").toast('show')
+            return false;
+        }else{
+        this.button='Please wait...';
+        this.showOverlay=true;
+        this.alertMsg = '';
+        const form = new FormData();
+        for (var key in this.parameters){
+        form.append(key, this.parameters[key])
+        }
+        form.append('filename', this.selectedFile, this.selectedFile.name)
+        axios.post('/admin/compare-face', form,  {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => {
+            this.button=this.btntxt;
+            this.showOverlay=false;
+            this.errors = '';
+            if((response.status != undefined && response.status==200) && (response.data.status==response.data.statusmsg)){
+            this.alertMsg=response.data.msg;
+            $("#alertPrimary").toast('show')
+            this.disabled = true;
+            setTimeout(function(){
+              window.location.href=response.data.redirect
+            }, 5000)
+            }else if(response.data.status=='failed'){
+            this.alertMsg=response.data.msg;
+            $("#alertDanger").toast('show')
+            }else{
+            this.alertMsg=response.data.msg;
+            $("#alertDanger").toast('show')
+            }
+
+        }).catch(error => {
+                this.button=this.btntxt;
+                this.showOverlay=false;
+                this.errors = '';
+            if(error.response != undefined && error.response.status==422){
+                this.errors = error.response.data.errors;
+                this.alertMsg='Something went wrong! Kindly confirm and correct the error(s) before you continue.';
+                $("#alertDanger").toast('show')
+            } else if(error.response != undefined && error.response.status==419){
+                this.alertMsg='This page has been inactive for long, Kindly refresh and try again.';
+                $("#alertDanger").toast('show')
+            }else if(error.response != undefined && error.response.status==500){
+                this.alertMsg='Internal server error! Please refresh and try again or report this error.';
+                $("#alertDanger").toast('show')
+            }else{
+                this.alertMsg='Access restricted or Network error! Please refresh and try again or report this error.';
+                $("#alertDanger").toast('show')
+            }
+        })
+    }
+    },
+
+      },
+      // End of methods
+      
+    }).mount('#signin')
+  </script>
+         
+</body>
+</html>
+
+

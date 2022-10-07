@@ -1,0 +1,41 @@
+
+    {% load static %}
+    <div id="header" class="container-fluid menuheader border-bottom borderStyle p-0 pb-1 pt-1 pb-md-1 pt-md-1">
+    <div class="row p-0 m-0">
+    <div class="col-md-12 p-0 m-0">
+    <nav class="navbar navbar-expand-lg">
+    <span class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <i class="bi-list"></i>
+    </span>
+    <a class="navbar-brand p-0 m-0 me-3 ms-md-2 siteStyle" href="/"><img height="32" width="32" src="{% static 'assets/icons/logo.png'%}"  alt=""> <span v-text="appname"></span> </a>
+    <ul class="navbar-nav p-0 m-3 mb-0 mt-0 d-md-none">
+        <li class="nav-item"> <i class="bi-search" role="img" aria-label="search" style="font-size: 1.4rem; color: black;"></i> </li>
+    </ul>
+    <div class="collapse navbar-collapse" id="navbar">
+    <div class="pb-1 mt-2 menudivider d-md-none"></div>
+    
+        <ul class="navbar-nav m-0 p-0 ms-auto">
+            <li class="nav-item m-3 mb-md-0 mt-md-0 me-md-3"> <a href="/"><i class="bi-question-circle" role="img" aria-label="Help" style="font-size: 1.2rem;"></i></a> </li>
+        </ul>
+    </div>
+    
+    </nav>
+    </div>
+    </div>
+    </div>
+    <script type="module">
+        import { createApp } from '/../static/assets/js/vue.js'
+        createApp({
+        el: '#header',
+        data(){
+          return{
+                    info:[],
+                    alert:'',
+                    progress:null,
+                    appname:'Biometric',
+                    classname:'',
+                 }
+        },
+        
+      }).mount('#header')
+    </script>

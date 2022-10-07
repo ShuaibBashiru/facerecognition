@@ -1,0 +1,6 @@
+django
+pandas
+mysqlclient
+deepface
+# dlib
+# cmake

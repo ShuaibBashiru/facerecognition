@@ -1,0 +1,37 @@
+{
+    "settings":{
+        "networkerror": "Network error! refresh and try again.",
+        "ownerstatus": "",
+        "ownername": "",
+        "facebook": "https://www.facebook.com/opeoluwarestaurant22",
+        "twitter": "#",
+        "instagram": "#",
+        "youtube": "#",
+        "linkedin": "#",
+        "supportemail": "opeoluwarestaurant22@gmail.com",
+        "passwordResetMail": "opeoluwarestaurant22@gmail.com",
+        "email_one": "opeoluwarestaurant22@gmail.com",
+        "email_two": "opeoluwarestaurant22@gmail.com",
+        "displayEmail": "opeoluwarestaurant22@gmail.com",
+        "phone_one": "+2348080677974",
+        "phone_two": "+2348033110087",
+        "displayPhone": "+2348080677974, +2348033110087",
+        "address": "Shiro street fadeyi Yaba, opposite JUPEB, Lagos, Nigeria.",
+        "copyright": "2022 Opeoluwa Restaurant, Shiro street fadeyi Yaba, opposite JUPEB, Lagos, Nigeria. All rights reserved.",
+        "headerTitle": "Welcome to",
+        "companyName": "Opeoluwa Restaurant",
+        "headerName": "Opeoluwa Restaurant",
+        "appname": "Opeoluwa Restaurant",
+        "logoname": "Opeoluwa",
+        "subname": "",
+        "slogan": "",
+        "year": "2022",
+        "logoHeight": "35px;",
+        "logoWidth": "35px;",
+        "sloganslide": "",
+        "stateCountry": "Lagos, Nigeria.",
+        "bg_color": "bg-light",
+        "logo": "/assets/icons/logo.jpg"
+    }
+    
+    }

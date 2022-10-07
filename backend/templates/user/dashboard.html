@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>User dashboard</title>
+  <!-- <meta http-equiv="X-Frame-Options" content="deny"> -->
+  {% include 'includes/headerfiles.html' %}
+</head>
+<body>
+{% include 'user/inc/header.html' %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-2">
+        {% include 'user/inc/sidebar.html' %}
+      </div>
+      <div class="col-10 mt-3" id="dashboard">
+        <div class="row">
+          <div class="col-md-12">
+              <section v-if="alert!=''">
+                <div v-bind:class="'alert '+ classname +' p-2 ps-3 pe-3 m-0 mb-1 mt-1 text-center border-0'"> <span></span> {{alert}} </div>
+            </section>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+             <div class="alert alert-primary p-2">
+              Welcome, {{name}}
+             </div>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+              <object type="text/html" class="w-100" data="https://portal.yabatech.edu.ng/erp/Login.cshtml/" height="600px" style="overflow:auto;border:2px ridge rgb(0, 255, 106)">
+          </object>
+          </div>
+      </div>
+
+      </div>
+    </div>
+    
+    </div>
+    <script type="module">
+      import { createApp } from '/../static/assets/js/vue.js'
+      createApp({
+      el: '#dashboard',
+      data(){
+        return{
+              info:[],
+              alert:'',
+              progress:null,
+              userid:null,
+              pwd:'',
+              rememberme_val: '',
+              rememberme: '',
+              classname:'',
+              token: '',
+              btntxt: 'Log in',
+              button: 'Log in',
+              isDisabled: false,
+              toggle: null,
+              pass_type:'password',
+              opacity_enable:'opacity:0.7; pointer-events: none;',
+              opacity_disable:'opacity:1; pointer-events:All;',
+              opacity:'',
+              isCameraStart: false,
+              isImage: false,
+              cameraStream: null,
+            }
+      
+      },
+      created(){
+
+      },
+      methods:{
+          getRecord: function(){
+          this.button='Please wait...'
+          this.isDisabled = true
+          this.opacity = this.opacity_enable
+          const fd = new FormData();
+          fd.append('userid', this.userid)
+          fd.append('pwd', this.pwd)
+          axios.post('/auth/user_sign_in/', fd)
+          .then(response => {
+            if(response.data.status==response.data.statusmsg){
+            this.classname=response.data.classname
+            this.alert=response.data.msg
+            this.button=this.btntxt
+            this.isDisabled = false
+            this.opacity = this.opacity_disable
+            setTimeout(function(){
+            window.location.href=response.data.redirect
+            },2000)
+            }else{
+            this.alert=response.data.msg
+            this.classname=response.data.classname
+            this.button=this.btntxt
+            this.isDisabled = false
+            this.button=this.btntxt
+            this.opacity = this.opacity_disable
+            }
+          
+        }).catch(()=>{
+            this.alert=localStorage.getItem('error')
+            this.classname='alert-danger p-2'
+            this.button=this.btntxt
+            this.isDisabled = false
+            this.opacity = this.opacity_disable
+
+        })
+    },
+
+      
+      },
+      // End of methods
+      
+    }).mount('#dashboard')
+  </script>
+         
+</body>
+</html>
+
+
