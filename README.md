@@ -1,6 +1,7 @@
 
-**Developer: Shuaib B. A
-Email: instructsme@gmail.com**
+**Developer: Shuaib B. A**
+
+**Email: instructsme@gmail.com**
 
 ## Face Recognition system  using Deepface framework, vueJs, WebRtc and Django framework!
 
