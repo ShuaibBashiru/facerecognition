@@ -1,4 +1,7 @@
 
+**Developer: Shuaib B. A
+Email: instructsme@gmail.com**
+
 ## Face Recognition system  using Deepface framework, vueJs, WebRtc and Django framework!
 
 This project is a simple face recognition application which was developed with the latest technology (vueJs, WebRtc and Django). 
